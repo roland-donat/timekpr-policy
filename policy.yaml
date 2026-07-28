@@ -1,0 +1,149 @@
+# =============================================================================
+# FICHIER DE POLITIQUE POUR TIMEKPR-AGENT
+# =============================================================================
+# Ce fichier définit les règles de temps d'écran pour chaque enfant.
+# Il peut être utilisé localement ou déployé sur des machines distantes.
+
+# --- Configuration Globale ---
+main:
+  # Utilisateur administrateur sur la machine locale.
+  # Sert à définir les droits sur les fichiers de logs (ex: /home/USER/timekpr-agent.log).
+  user_sudo: "roland"
+
+  # Zone scolaire pour la détection automatique des vacances (A, B ou C).
+  # Rennes = Zone B. Voir: https://www.education.gouv.fr/calendrier-scolaire
+  zone_vacances: "B"
+
+# =============================================================================
+# CONFIGURATION PAR ENFANT
+# =============================================================================
+noe:
+  # --- Liste des machines cibles ---
+  machines:
+    #- hostname: "noe-wifi"    # Nom réseau ou IP de la machine
+    - hostname: "192.168.1.30"    # Nom réseau ou IP de la machine
+      username: "noe"         # Session Linux de l'enfant (défaut: nom de la clé parent)
+      user_timekpr: "roland"  # Utilisateur SSH avec droits sudo pour timekpra
+
+  # --- Connexion Pronote (Mode Dynamique) ---
+  notes_backend:
+    type: "pronote"
+    ent: "ac_rennes"          # Identifiant de l'ENT (ex: ac_rennes)
+    account_type: "eleve"     # "eleve" ou "parent"
+    # HORS du dépôt : fournis via variables d'environnement (fichier
+    # secrets.env, gitignoré — voir secrets.env.example). L'URL en fait partie
+    # car elle contient le code UAI de l'établissement, et ce fichier est publié
+    # sur un dépôt public.
+    url_env: "PRONOTE_NOE_URL"
+    login_env: "PRONOTE_NOE_LOGIN"
+    password_env: "PRONOTE_NOE_PASSWORD"
+
+  # --- Plages horaires autorisées ---
+  # Format "HH-HH". Session interdite en dehors de ces plages.
+  # Si non défini, 07-23 est utilisé par défaut.
+  #allowed_hours: ["10-18", "20-23"]
+  allowed_hours: ["10-23"]
+  #daily_bonus: 35%
+
+  # --- Limites de secours (fallback) ---
+  # Utilisées UNIQUEMENT si le mode dynamique échoue (Pronote injoignable ou
+  # mal configuré). Format: minutes, Lundi -> Dimanche.
+  # Si cette clé est absente, une alerte est journalisée et la configuration
+  # timekpr N'EST PAS modifiée (les limites en place restent inchangées).
+  # timelimits: [30, 45, 90, 30, 45, 120, 120]
+
+  # --- Paramètres du mode dynamique ---
+  # Présence de cette clé active le calcul basé sur les notes Pronote.
+  timelimits_notes:
+    # Nombre de notes récentes utilisées pour la moyenne glissante.
+    history_depth: 10
+    
+    # Seuil de temps 0% (Temps min). Valeur fixe ou clé statistique :
+    # - "class_min_depth" : Moyenne la plus basse de la classe sur les N dernières notes (dynamique).
+    # - "class_avg_depth" : Moyenne générale de la classe sur les N dernières notes (dynamique).
+    # - "class_min_official" : Pire moyenne générale de la classe sur le semestre (statique).
+    # - "class_avg_official" : Moyenne générale de la classe sur le semestre (statique).
+    min_average_for_time: "class_avg_depth"
+
+    # Seuil de temps 100% (Temps max). Valeur fixe ou clé statistique :
+    # - "class_max_depth" : Moyenne la plus haute de la classe sur les N dernières notes (dynamique).
+    # - "class_avg_depth" : Moyenne générale de la classe sur les N dernières notes (dynamique).
+    # - "class_max_official" : Meilleure moyenne générale de la classe sur le semestre (statique).
+    # - "class_avg_official" : Moyenne générale de la classe sur le semestre (statique).
+    max_average_for_time: "class_max_depth"
+    
+    # Temps max débloqué en MINUTES (Lundi -> Dimanche) si seuil max atteint.
+    max_daily_minutes: [60, 90, 240, 60, 90, 240, 240]
+    
+    # Temps minimum garanti (Plancher) en MINUTES (Lundi -> Dimanche).
+    min_daily_floor: [0, 0, 0, 0, 0, 0, 0]
+
+    # Bonus/Malus journalier (Optionnel) en MINUTES.
+    # S'ajoute au temps calculé (après application du plancher).
+    # Peut être un nombre unique (ex: 15 pour +15min tous les jours)
+    # ou une liste de 7 entiers (ex: [0, 0, 10, 0, 0, 30, 30]).
+    # daily_bonus: 10
+
+    # Coefficients spécifiques par matière (Défaut: 1).
+    # Permet de donner plus ou moins d'importance à certaines matières.
+    coefficients:
+      "FRANCAIS": 1
+      "ED.PHYSIQUE & SPORT.": 1
+      "PHYSIQUE-CHIMIE": 1  
+      "ARTS PLASTIQUES": 1     
+      "HISTOIRE-GEOGRAPHIE- EMC": 1 
+      "MATHEMATIQUES": 1        
+      "ANGLAIS LV1": 1          
+      "SCIENCES VIE & TERRE": 1 
+      "EDUCATION MUSICALE": 1   
+      "LCA LATIN": 1
+
+  # --- Overrides vacances scolaires (deep merge sur la config normale) ---
+  # Les clés définies ici remplacent les clés normales pendant les vacances.
+  vacances:
+    # 'extra_dates' (optionnel) : périodes perso traitées comme des vacances,
+    # EN PLUS des vacances officielles de la zone (main.zone_vacances).
+    # Chaque entrée est soit un jour unique "AAAA-MM-JJ", soit une plage
+    # [début, fin] inclusive. Utile pour un voyage, un pont, etc.
+    extra_dates:
+      - ["2026-06-23", "2026-07-04"]   # plage inclusive
+    #   - "2026-11-02"                   # jour unique (pont)
+    timelimits: [150, 150, 150, 150, 150, 150, 150]
+
+  #   timelimits_notes:  
+  #     max_daily_minutes: [240, 240, 240, 240, 240, 240, 240]
+
+  # # --- Override jours fériés (optionnel) ---
+  # # Profil appliqué les jours fériés français TOMBANT EN PÉRIODE SCOLAIRE
+  # # (1er mai, Ascension, 14 juillet...). Pendant les vacances, c'est le profil
+  # # 'vacances' qui prime. Fériés calculés en interne (aucune dépendance réseau).
+  # feries:
+  #   timelimits_notes:
+  #     max_daily_minutes: [240, 240, 240, 240, 240, 240, 240]
+
+# --- Exemple de configuration Statique ---
+come:
+  machines:
+#    - hostname: "come-wifi"
+    - hostname: "192.168.1.31"
+      username: "come"
+      user_timekpr: "roland"
+  
+  # Temps fixes en MINUTES (Lundi -> Dimanche)
+  # Utilisé car 'timelimits_notes' est absent.
+  timelimits: [0, 30, 90, 0, 30, 90, 90]
+
+  #allowed_hours: ["10-18", "20-23"]
+  allowed_hours: ["10-23"]
+
+
+  # --- Overrides vacances scolaires ---
+  vacances:
+    # extra_dates:                       # périodes perso (voir noe ci-dessus)
+    #   - ["2026-12-26", "2026-12-31"]
+    timelimits: [90, 90, 90, 90, 90, 90, 90]
+
+  # --- Override jours fériés (en période scolaire) ---
+  feries:
+    timelimits: [90, 90, 90, 90, 90, 90, 90]
+
