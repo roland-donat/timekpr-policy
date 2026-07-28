@@ -20,8 +20,7 @@ main:
 noe:
   # --- Liste des machines cibles ---
   machines:
-    #- hostname: "noe-wifi"    # Nom réseau ou IP de la machine
-    - hostname: "192.168.1.30"    # Nom réseau ou IP de la machine
+    - hostname: "noe-wifi"    # Nom réseau ou IP de la machine
       username: "noe"         # Session Linux de l'enfant (défaut: nom de la clé parent)
       user_timekpr: "roland"  # Utilisateur SSH avec droits sudo pour timekpra
 
@@ -124,8 +123,7 @@ noe:
 # --- Exemple de configuration Statique ---
 come:
   machines:
-#    - hostname: "come-wifi"
-    - hostname: "192.168.1.31"
+    - hostname: "come-wifi"
       username: "come"
       user_timekpr: "roland"
   
