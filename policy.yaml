@@ -41,7 +41,8 @@ noe:
   # Format "HH-HH". Session interdite en dehors de ces plages.
   # Si non défini, 07-23 est utilisé par défaut.
   #allowed_hours: ["10-18", "20-23"]
-  allowed_hours: ["10-23"]
+  # 10-19 : heures 10 à 19 incluses (borne haute INCLUSIVE), coupure à 20h pile.
+  allowed_hours: ["10-19"]
   #daily_bonus: 35%
 
   # --- Limites de secours (fallback) ---
@@ -127,12 +128,42 @@ come:
       username: "come"
       user_timekpr: "roland"
   
-  # Temps fixes en MINUTES (Lundi -> Dimanche)
-  # Utilisé car 'timelimits_notes' est absent.
+  # --- Limites de secours (fallback) ---
+  # Utilisées UNIQUEMENT si le mode dynamique échoue (Pronote injoignable ou
+  # pas encore configuré). Format: minutes, Lundi -> Dimanche.
   timelimits: [0, 30, 90, 0, 30, 90, 90]
 
+  # --- Connexion Pronote (Mode Dynamique) ---
+  # PAS ENCORE CONFIGURÉ : renseigner PRONOTE_COME_URL / LOGIN / PASSWORD dans
+  # secrets.env et redéployer. D'ici là, chaque tirage échoue et le fallback
+  # statique ci-dessus s'applique.
+  notes_backend:
+    type: "pronote"
+    ent: "ac_rennes"          # Identifiant de l'ENT (ex: ac_rennes)
+    account_type: "eleve"     # "eleve" ou "parent"
+    url_env: "PRONOTE_COME_URL"
+    login_env: "PRONOTE_COME_LOGIN"
+    password_env: "PRONOTE_COME_PASSWORD"
+
   #allowed_hours: ["10-18", "20-23"]
-  allowed_hours: ["10-23"]
+  # 10-19 : heures 10 à 19 incluses (borne haute INCLUSIVE), coupure à 20h pile.
+  allowed_hours: ["10-19"]
+
+  # --- Paramètres du mode dynamique (identiques à ceux de Noé, plafonds différents) ---
+  timelimits_notes:
+    # Nombre de notes récentes utilisées pour la moyenne glissante.
+    history_depth: 10
+
+    # Seuil de temps 0% et 100%, comme pour Noé.
+    min_average_for_time: "class_avg_depth"
+    max_average_for_time: "class_max_depth"
+
+    # Temps max débloqué en MINUTES (Lundi -> Dimanche) si seuil max atteint.
+    # 30 min lundi/jeudi, 60 min mardi/vendredi, 120 min mercredi et week-end.
+    max_daily_minutes: [30, 60, 120, 30, 60, 120, 120]
+
+    # Temps minimum garanti (Plancher) en MINUTES (Lundi -> Dimanche).
+    min_daily_floor: [0, 0, 0, 0, 0, 0, 0]
 
 
   # --- Overrides vacances scolaires ---
