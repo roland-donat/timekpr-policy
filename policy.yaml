@@ -46,11 +46,12 @@ noe:
   #daily_bonus: 35%
 
   # --- Limites de secours (fallback) ---
-  # Utilisées UNIQUEMENT si le mode dynamique échoue (Pronote injoignable ou
-  # mal configuré). Format: minutes, Lundi -> Dimanche.
+  # Utilisées UNIQUEMENT si le mode dynamique échoue au-delà des 7 jours de
+  # cache de notes. Format: minutes, Lundi -> Dimanche.
   # Si cette clé est absente, une alerte est journalisée et la configuration
-  # timekpr N'EST PAS modifiée (les limites en place restent inchangées).
-  # timelimits: [30, 45, 90, 30, 45, 120, 120]
+  # timekpr N'EST PAS modifiée (les limites en place restent inchangées, voire
+  # aucune limite sur une machine fraîchement installée).
+  timelimits: [30, 45, 90, 30, 45, 120, 120]
 
   # --- Paramètres du mode dynamique ---
   # Présence de cette clé active le calcul basé sur les notes Pronote.
