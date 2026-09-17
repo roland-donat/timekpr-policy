@@ -41,8 +41,8 @@ noe:
   # Format "HH-HH". Session interdite en dehors de ces plages.
   # Si non défini, 07-23 est utilisé par défaut.
   #allowed_hours: ["10-18", "20-23"]
-  # 10-21 : exception devoir, uniquement le mercredi 16/09/2026 soir.
-  allowed_hours: ["10-21"]
+  # 10-19 : heures 10 à 19 incluses (borne haute INCLUSIVE), coupure à 20h pile.
+  allowed_hours: ["10-19"]
   #daily_bonus: 35%
 
   # --- Limites de secours (fallback) ---
