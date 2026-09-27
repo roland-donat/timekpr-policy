@@ -28,14 +28,14 @@ noe:
   notes_backend:
     type: "pronote"
     ent: "ac_rennes"          # Identifiant de l'ENT (ex: ac_rennes)
-    account_type: "eleve"     # "eleve" ou "parent"
+    account_type: "parent"     # "eleve" ou "parent"
     # HORS du dépôt : fournis via variables d'environnement (fichier
     # secrets.env, gitignoré — voir secrets.env.example). L'URL en fait partie
     # car elle contient le code UAI de l'établissement, et ce fichier est publié
     # sur un dépôt public.
-    url_env: "PRONOTE_NOE_URL"
-    login_env: "PRONOTE_NOE_LOGIN"
-    password_env: "PRONOTE_NOE_PASSWORD"
+    url_env: "PRONOTE_PARENT_URL"
+    login_env: "PRONOTE_PARENT_LOGIN"
+    password_env: "PRONOTE_PARENT_PASSWORD"
 
   # --- Plages horaires autorisées ---
   # Format "HH-HH". Session interdite en dehors de ces plages.
@@ -135,16 +135,15 @@ come:
   timelimits: [30, 45, 90, 30, 45, 90, 90]
 
   # --- Connexion Pronote (Mode Dynamique) ---
-  # PAS ENCORE CONFIGURÉ : renseigner PRONOTE_COME_URL / LOGIN / PASSWORD dans
-  # secrets.env et redéployer. D'ici là, chaque tirage échoue et le fallback
-  # statique ci-dessus s'applique.
+  # Compte parent : le même jeu d'identifiants sert les deux enfants, l'agent
+  # choisit l'enfant d'après la clé de politique ci-dessus.
   notes_backend:
     type: "pronote"
     ent: "ac_rennes"          # Identifiant de l'ENT (ex: ac_rennes)
-    account_type: "eleve"     # "eleve" ou "parent"
-    url_env: "PRONOTE_COME_URL"
-    login_env: "PRONOTE_COME_LOGIN"
-    password_env: "PRONOTE_COME_PASSWORD"
+    account_type: "parent"     # "eleve" ou "parent"
+    url_env: "PRONOTE_PARENT_URL"
+    login_env: "PRONOTE_PARENT_LOGIN"
+    password_env: "PRONOTE_PARENT_PASSWORD"
 
   #allowed_hours: ["10-18", "20-23"]
   # 10-19 : heures 10 à 19 incluses (borne haute INCLUSIVE), coupure à 20h pile.
