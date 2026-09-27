@@ -41,8 +41,8 @@ noe:
   # Format "HH-HH". Session interdite en dehors de ces plages.
   # Si non défini, 07-23 est utilisé par défaut.
   #allowed_hours: ["10-18", "20-23"]
-  # 10-19 : heures 10 à 19 incluses (borne haute INCLUSIVE), coupure à 20h pile.
-  allowed_hours: ["10-19"]
+  # 10-18 : heures 10 à 18 incluses (borne haute INCLUSIVE), coupure à 19h pile.
+  allowed_hours: ["10-18"]
   #daily_bonus: 35%
 
   # --- Limites de secours (fallback) ---
@@ -146,8 +146,8 @@ come:
     password_env: "PRONOTE_PARENT_PASSWORD"
 
   #allowed_hours: ["10-18", "20-23"]
-  # 10-19 : heures 10 à 19 incluses (borne haute INCLUSIVE), coupure à 20h pile.
-  allowed_hours: ["10-19"]
+  # 10-18 : heures 10 à 18 incluses (borne haute INCLUSIVE), coupure à 19h pile.
+  allowed_hours: ["10-18"]
 
   # --- Paramètres du mode dynamique (identiques à ceux de Noé, plafonds différents) ---
   timelimits_notes:
