@@ -171,6 +171,8 @@ come:
     # extra_dates:                       # périodes perso (voir noe ci-dessus)
     #   - ["2026-12-26", "2026-12-31"]
     timelimits: [120, 120, 120, 120, 120, 120, 120]
+    # 10-19 : heures 10 à 19 incluses, coupure à 20h pile pendant les vacances.
+    allowed_hours: ["10-19"]
 
   # --- Override jours fériés (en période scolaire) ---
   feries:
