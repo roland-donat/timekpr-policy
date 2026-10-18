@@ -110,6 +110,8 @@ noe:
       - ["2026-06-23", "2026-07-04"]   # plage inclusive
     #   - "2026-11-02"                   # jour unique (pont)
     timelimits: [150, 150, 150, 150, 150, 150, 150]
+    # 10-19 : heures 10 à 19 incluses, coupure à 20h pile pendant les vacances.
+    allowed_hours: ["10-19"]
 
   #   timelimits_notes:  
   #     max_daily_minutes: [240, 240, 240, 240, 240, 240, 240]
