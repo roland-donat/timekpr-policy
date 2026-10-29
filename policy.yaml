@@ -109,9 +109,7 @@ noe:
     extra_dates:
       - ["2026-06-23", "2026-07-04"]   # plage inclusive
     #   - "2026-11-02"                   # jour unique (pont)
-    # TEMPORAIRE : mercredi 21/10/2026 à 120 (sanction, -30 min). Remettre 150
-    # après la coupure du 21/10 au soir, et avant le mercredi 28/10.
-    timelimits: [150, 150, 120, 150, 150, 150, 150]
+    timelimits: [150, 150, 150, 150, 150, 150, 150]
     # 10-19 : heures 10 à 19 incluses, coupure à 20h pile pendant les vacances.
     allowed_hours: ["10-19"]
 
